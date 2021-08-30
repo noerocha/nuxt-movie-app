@@ -4,8 +4,15 @@
     <!-- Search -->
 
     <div class="container search">
-      <input  v-model.lazy="searchMovie" type="text" placeholder="Search" @keyup.enter="$fetch"  />
-      <button v-show="searchMovie !== ''" class="button" @click="clearSearch">Clear Search</button>
+      <input
+        v-model.lazy="searchMovie"
+        type="text"
+        placeholder="Search"
+        @keyup.enter="$fetch"
+      />
+      <button v-show="searchMovie !== ''" class="button" @click="clearSearch">
+        Clear Search
+      </button>
     </div>
 
     <!-- Loading -->
@@ -14,78 +21,34 @@
     <!-- Movies -->
     <div v-else class="container movies">
       <div v-if="searchMovie === ''" id="movie-grid" class="movies-grid">
-        <div v-for="movie in movies" :key="movie.id" class="movie" >
-          <div class="movie-img">
-            <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`" alt="" />
-            <p class="review">{{movie.vote_average}}</p>
-            <p class="overview">{{movie.overview}}</p>
-          </div>
-          <div class="info">
-            <p class="title">
-              {{movie.title.slice(0, 25)}} <span v-if="movie.title.length > 25">...</span>
-            </p>
-            <p class="release">
-              Released: {{new Date(movie.release_date).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}}
-            </p>
-            <NuxtLink :to="{name: 'movies-movieid', params: {movieid: movie.id}}" class="button button-light">
-              Get More Info
-            </NuxtLink>
-          </div>
-        </div>
+        <Movie v-for="movie in movies" :key="movie.id" :movie="movie" />
       </div>
 
       <div v-else id="movie-grid" class="movies-grid">
-        <div v-for="movie in searchedMovies" :key="movie.id" class="movie" >
-          <div class="movie-img">
-            <img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`" alt="" />
-            <p class="review">{{movie.vote_average}}</p>
-            <p class="overview">{{movie.overview}}</p>
-          </div>
-          <div class="info">
-            <p class="title">
-              {{movie.title.slice(0, 25)}} <span v-if="movie.title.length > 25">...</span>
-            </p>
-            <p class="release">
-              Released: {{new Date(movie.release_date).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-              })}}
-            </p>
-            <NuxtLink :to="{name: 'movies-movieid', params: {movieid: movie.id}}" class="button button-light">
-              Get More Info
-            </NuxtLink>
-          </div>
-        </div>
+        <Movie v-for="movie in searchedMovies" :key="movie.id" :movie="movie" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 export default {
-  
   data() {
     return {
       movies: [],
       searchedMovies: [],
-      searchMovie: ''
+      searchMovie: '',
     }
   },
   fetchDelay: 1500,
   async fetch() {
-    if(this.searchMovie !== '') {
-      await this.searchMovies();
-      return;
+    if (this.searchMovie !== '') {
+      await this.searchMovies()
+      return
     }
 
-    await this.getMovies();
-    
+    await this.getMovies()
   },
   head() {
     return {
@@ -94,39 +57,39 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: 'Get all the latest stremaing movies in theaters & online'
+          content: 'Get all the latest stremaing movies in theaters & online',
         },
         {
           hid: 'keywords',
           name: 'keywords',
-          content: 'movies, stream, streaming'
-        }
-      ]
+          content: 'movies, stream, streaming',
+        },
+      ],
     }
   },
   methods: {
     async getMovies() {
-      const baseUrl = process.env.BASE_URL;
-      const apiKey = process.env.TMDB_API_KEY;
+      const baseUrl = process.env.BASE_URL
+      const apiKey = process.env.TMDB_API_KEY
 
-      const url = `${baseUrl}movie/now_playing?api_key=${apiKey}&language=en-US&page=1`;
-      const data = await axios(url, {method: 'GET'});
+      const url = `${baseUrl}movie/now_playing?api_key=${apiKey}&language=en-US&page=1`
+      const data = await axios(url, { method: 'GET' })
 
-      this.movies = data.data.results;
+      this.movies = data.data.results
     },
     async searchMovies() {
-      const baseUrl = process.env.BASE_URL;
-      const apiKey = process.env.TMDB_API_KEY;
-      const url = `${baseUrl}search/movie?api_key=${apiKey}&language=en-US&page=1&query=${this.searchMovie}`;
+      const baseUrl = process.env.BASE_URL
+      const apiKey = process.env.TMDB_API_KEY
+      const url = `${baseUrl}search/movie?api_key=${apiKey}&language=en-US&page=1&query=${this.searchMovie}`
 
-      const data = await axios(url, {method: 'GET'});
-      this.searchedMovies = data.data.results;
+      const data = await axios(url, { method: 'GET' })
+      this.searchedMovies = data.data.results
     },
     clearSearch() {
-      this.searchMovie = '';
-      this.searchedMovies = [];
-    }
-  }
+      this.searchMovie = ''
+      this.searchedMovies = []
+    },
+  },
 }
 </script>
 
@@ -169,65 +132,6 @@ export default {
       }
       @media (min-width: 1100px) {
         grid-template-columns: repeat(4, 1fr);
-      }
-      .movie {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        .movie-img {
-          position: relative;
-          overflow: hidden;
-          &:hover {
-            .overview {
-              transform: translateY(0);
-            }
-          }
-          img {
-            display: block;
-            width: 100%;
-            height: 100%;
-          }
-          .review {
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 40px;
-            height: 40px;
-            background-color: #c92502;
-            color: #fff;
-            border-radius: 0 0 16px 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-              0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          }
-          .overview {
-            line-height: 1.5;
-            position: absolute;
-            bottom: 0;
-            background-color: rgba(201, 38, 2, 0.9);
-            padding: 12px;
-            color: #fff;
-            transform: translateY(100%);
-            transition: 0.3s ease-in-out all;
-          }
-        }
-        .info {
-          margin-top: auto;
-          .title {
-            margin-top: 8px;
-            color: #fff;
-            font-size: 20px;
-          }
-          .release {
-            margin-top: 8px;
-            color: #c9c9c9;
-          }
-          .button {
-            margin-top: 8px;
-          }
-        }
       }
     }
   }
