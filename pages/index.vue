@@ -8,8 +8,11 @@
       <button v-show="searchMovie !== ''" class="button" @click="clearSearch">Clear Search</button>
     </div>
 
+    <!-- Loading -->
+    <Loading v-if="$fetchState.pending" />
+
     <!-- Movies -->
-    <div class="container movies">
+    <div v-else class="container movies">
       <div v-if="searchMovie === ''" id="movie-grid" class="movies-grid">
         <div v-for="movie in movies" :key="movie.id" class="movie" >
           <div class="movie-img">
@@ -66,6 +69,7 @@
 <script>
 import axios from 'axios';
 export default {
+  
   data() {
     return {
       movies: [],
@@ -73,6 +77,7 @@ export default {
       searchMovie: ''
     }
   },
+  fetchDelay: 1500,
   async fetch() {
     if(this.searchMovie !== '') {
       await this.searchMovies();
@@ -81,6 +86,23 @@ export default {
 
     await this.getMovies();
     
+  },
+  head() {
+    return {
+      title: 'Movie App - Latest Streaming Movie Info',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Get all the latest stremaing movies in theaters & online'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: 'movies, stream, streaming'
+        }
+      ]
+    }
   },
   methods: {
     async getMovies() {
