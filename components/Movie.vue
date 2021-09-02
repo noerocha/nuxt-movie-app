@@ -29,8 +29,6 @@
       >
         Get More Info
       </NuxtLink>
-
-      <div class="button" @click="handleClick">TESTE</div>
     </div>
   </div>
 </template>
@@ -44,11 +42,6 @@ export default {
       default: null,
     },
   },
-  methods: {
-      handleClick() {
-          this.$emit("zzz");
-      }
-  }
 }
 </script>
 
