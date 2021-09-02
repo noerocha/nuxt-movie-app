@@ -1,5 +1,5 @@
 # movie-app
-
+Nuxt Movie App - movie app following youtube tutorial by John Komarnicki
 ## Build Setup
 
 ```bash
