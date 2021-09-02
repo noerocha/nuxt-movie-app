@@ -21,11 +21,11 @@
     <!-- Movies -->
     <div v-else class="container movies">
       <div v-if="searchMovie === ''" id="movie-grid" class="movies-grid">
-        <Movie v-for="movie in movies" :key="movie.id" :movie="movie" @zzz="alert(`${movie.title}`)" />
+        <Movie v-for="movie in movies" :key="movie.id" :movie="movie" />
       </div>
 
       <div v-else id="movie-grid" class="movies-grid">
-        <Movie v-for="movie in searchedMovies" :key="movie.id" :movie="movie" @zzz="alert(`${movie.title}`)"/>
+        <Movie v-for="movie in searchedMovies" :key="movie.id" :movie="movie" />
       </div>
     </div>
   </div>
